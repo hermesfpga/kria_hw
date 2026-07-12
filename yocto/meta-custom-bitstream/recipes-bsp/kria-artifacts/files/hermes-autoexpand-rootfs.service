@@ -1,0 +1,12 @@
+[Unit]
+Description=Auto-expand root filesystem on first boot
+After=local-fs.target systemd-udev-settle.service
+Wants=systemd-udev-settle.service
+ConditionPathExists=!/var/lib/hermes/rootfs-expanded
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/hermes-autoexpand-rootfs
+
+[Install]
+WantedBy=multi-user.target

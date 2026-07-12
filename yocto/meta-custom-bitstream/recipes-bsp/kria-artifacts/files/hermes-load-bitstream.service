@@ -1,0 +1,13 @@
+[Unit]
+Description=Load Hermes FPGA bitstream via fpga_manager
+DefaultDependencies=no
+After=local-fs.target systemd-modules-load.service
+Before=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/hermes-load-bitstream
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

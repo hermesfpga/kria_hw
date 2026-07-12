@@ -1,0 +1,31 @@
+name: "Generate KRIA Zynq FPGA bitstream"
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: [ self-hosted, Linux, wsl ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.build_key }}
+
+      - name: Clean workspace
+        run: |
+          git -C "$GITHUB_WORKSPACE" reset --hard
+          git -C "$GITHUB_WORKSPACE" clean -ffdx
+
+      - name: Generate bitstream
+        run: |
+          cd scripts
+          make bitstream
+
+      - name: Generate Vivado error report
+        if: always()
+        run: |
+          cd scripts
+          make report
