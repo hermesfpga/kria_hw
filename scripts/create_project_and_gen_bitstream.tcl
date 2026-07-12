@@ -1,3 +1,7 @@
+# Enable IP caching
+set enable_ip_cache 1;
+set ip_cache_dir "/vivado_cache"
+
 set TCLPATH [file dirname [info script]]
 puts $TCLPATH
 source $TCLPATH/build_utils.tcl
@@ -10,10 +14,16 @@ set IMPL_JOBS_WINDOWS 4
 set IMPL_JOBS_LINUX 4
 
 # Detect if running on Linux, assign appropriate job counts
-if {[string equal $tcl_platform(os) "Linux"]} {
+if {$tcl_platform(platform) eq "unix"} {
     set SYNTH_JOBS $SYNTH_JOBS_LINUX
     set IMPL_JOBS $IMPL_JOBS_LINUX
     puts "Running on Linux - Synth jobs: $SYNTH_JOBS, Impl jobs: $IMPL_JOBS"
+
+    if {$enable_ip_cache == 1} {
+        config_ip_cache -use_cache_location $ip_cache_dir
+        puts "IP cache directory set to: $ip_cache_dir"
+    }
+
 } else {
     set SYNTH_JOBS $SYNTH_JOBS_WINDOWS
     set IMPL_JOBS $IMPL_JOBS_WINDOWS
